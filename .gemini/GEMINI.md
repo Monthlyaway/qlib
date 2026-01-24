@@ -1,0 +1,1 @@
+1. 默认的数据存放和下载到 ~/.qlib/qlib_data/cn_data 

@@ -31,3 +31,4 @@ RUN if [ "$IS_STABLE" = "yes" ]; then \
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=1.0.0
 RUN pip install .[dev]
+RUN pip install --no-deps -e .

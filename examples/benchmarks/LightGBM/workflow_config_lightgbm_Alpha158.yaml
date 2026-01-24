@@ -1,47 +1,47 @@
 qlib_init:
     provider_uri: "~/.qlib/qlib_data/cn_data"
     region: cn
-market: &market csi300
-benchmark: &benchmark SH000300
+market: &market csi300  # 股票池
+benchmark: &benchmark SH000300  # 基准指数
 data_handler_config: &data_handler_config
-    start_time: 2008-01-01
-    end_time: 2020-08-01
-    fit_start_time: 2008-01-01
-    fit_end_time: 2014-12-31
+    start_time: 2012-01-01
+    end_time: 2026-01-24
+    fit_start_time: 2012-01-01
+    fit_end_time: 2023-12-31
     instruments: *market
-port_analysis_config: &port_analysis_config
+port_analysis_config: &port_analysis_config  # 它定义了回测的起始时间（2017-01-01）和结束时间（2020-08-01）。
     strategy:
         class: TopkDropoutStrategy
         module_path: qlib.contrib.strategy
         kwargs:
             signal: <PRED>
-            topk: 50
-            n_drop: 5
+            topk: 50  # 选择前50个股票
+            n_drop: 5  # 每天drop 5个股票
     backtest:
-        start_time: 2017-01-01
-        end_time: 2020-08-01
-        account: 100000000
-        benchmark: *benchmark
+        start_time: 2025-01-01
+        end_time: 2026-01-24
+        account: 100000000  # 初始资金
+        benchmark: *benchmark  # 基准指数
         exchange_kwargs:
-            limit_threshold: 0.095
-            deal_price: close
-            open_cost: 0.0005
-            close_cost: 0.0015
-            min_cost: 5
+            limit_threshold: 0.095  # 限价单的滑点
+            deal_price: close  # 交易价格
+            open_cost: 0.0005  # 开仓手续费
+            close_cost: 0.0015  # 平仓手续费
+            min_cost: 5  # 最小交易成本
 task:
     model:
         class: LGBModel
         module_path: qlib.contrib.model.gbdt
         kwargs:
-            loss: mse
-            colsample_bytree: 0.8879
-            learning_rate: 0.2
-            subsample: 0.8789
-            lambda_l1: 205.6999
-            lambda_l2: 580.9768
-            max_depth: 8
-            num_leaves: 210
-            num_threads: 20
+            loss: mse  # 损失函数
+            colsample_bytree: 0.8879  # 树的列采样率
+            learning_rate: 0.2  # 学习率
+            subsample: 0.8789  # 树的行采样率
+            lambda_l1: 205.6999  # L1正则化
+            lambda_l2: 580.9768  # L2正则化
+            max_depth: 8  # 树的最大深度
+            num_leaves: 210  # 树的叶子节点数
+            num_threads: 14  # 训练时使用的线程数
     dataset:
         class: DatasetH
         module_path: qlib.data.dataset
@@ -51,9 +51,9 @@ task:
                 module_path: qlib.contrib.data.handler
                 kwargs: *data_handler_config
             segments:
-                train: [2008-01-01, 2014-12-31]
-                valid: [2015-01-01, 2016-12-31]
-                test: [2017-01-01, 2020-08-01]
+                train: [2012-01-01, 2023-12-31]
+                valid: [2024-01-01, 2024-12-31]
+                test: [2025-01-01, 2026-01-24]
     record: 
         - class: SignalRecord
           module_path: qlib.workflow.record_temp
